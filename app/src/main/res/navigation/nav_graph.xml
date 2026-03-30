@@ -27,7 +27,7 @@
     </fragment>
     <fragment
         android:id="@+id/thirtFragment"
-        android:name="com.example.ejercicio4_diseo.ThirtFragment"
+        android:name="com.example.ejercicio4_diseo.ThirdFragment"
         android:label="fragment_thirt"
-        tools:layout="@layout/fragment_thirt" />
+        tools:layout="@layout/fragment_third" />
 </navigation>

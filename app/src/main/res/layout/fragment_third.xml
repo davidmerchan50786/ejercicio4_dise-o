@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ThirdFragment">
+
+    <CheckBox
+        android:id="@+id/cbCoche1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Coche 1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/cbCoche2" />
+
+    <CheckBox
+        android:id="@+id/cbCoche2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Coche 2"
+        app:layout_constraintTop_toBottomOf="@id/cbCoche1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/cbCoche3" />
+
+    <CheckBox
+        android:id="@+id/cbCoche3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Coche 3"
+        app:layout_constraintTop_toBottomOf="@id/cbCoche2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/cbMoto1" />
+
+    <CheckBox
+        android:id="@+id/cbMoto1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Moto 1"
+        app:layout_constraintTop_toBottomOf="@id/cbCoche3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/cbMoto2" />
+
+    <CheckBox
+        android:id="@+id/cbMoto2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Moto 2"
+        app:layout_constraintTop_toBottomOf="@id/cbMoto1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/cbMoto3" />
+
+    <CheckBox
+        android:id="@+id/cbMoto3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Moto 3"
+        app:layout_constraintTop_toBottomOf="@id/cbMoto2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/btnComprar" />
+
+    <Button
+        android:id="@+id/btnComprar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Comprar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cbMoto3" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
