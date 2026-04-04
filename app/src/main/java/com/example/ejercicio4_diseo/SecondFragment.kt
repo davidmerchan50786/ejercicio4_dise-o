@@ -5,35 +5,69 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.example.ejercicio4_diseo.databinding.FragmentSecondBinding
+import com.example.ejercicio4_diseo.modelo.Usuario
 
-/**
- * A simple [Fragment] subclass as the second destination in the navigation.
- */
 class SecondFragment : Fragment() {
 
     private var _binding: FragmentSecondBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         _binding = FragmentSecondBinding.inflate(inflater, container, false)
         return binding.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.buttonInsertar.setOnClickListener {
-            findNavController().navigate(R.id.action_SecondFragment_to_FirstFragment)
+            val nombre = binding.etNombre.text.toString().trim()
+            val apellidos = binding.etApellidos.text.toString().trim()
+            val edadTexto = binding.etEdad.text.toString().trim()
+
+            // validamos que todos los campos estén rellenos
+            var hayErrores = false
+            val errores = mutableListOf<String>()
+
+            if (nombre.isEmpty()) {
+                errores.add("El nombre no puede estar vacío")
+                hayErrores = true
+            }
+            if (apellidos.isEmpty()) {
+                errores.add("Los apellidos no pueden estar vacíos")
+                hayErrores = true
+            }
+            if (edadTexto.isEmpty()) {
+                errores.add("La edad no puede estar vacía")
+                hayErrores = true
+            } else {
+                val edad = edadTexto.toIntOrNull()
+                if (edad == null) {
+                    errores.add("La edad debe ser un número")
+                    hayErrores = true
+                } else if (edad < 16 || edad > 80) {
+                    errores.add("La edad debe estar entre 16 y 80 años")
+                    hayErrores = true
+                }
+            }
+
+            if (hayErrores) {
+                // mostramos todos los errores en un toast
+                Toast.makeText(requireContext(), errores.joinToString("\n"), Toast.LENGTH_LONG).show()
+            } else {
+                // todo bien, creamos el usuario y volvemos al primero
+                val edad = edadTexto.toInt()
+                val mainActivity = activity as MainActivity
+                mainActivity.usuario = Usuario(nombre, apellidos, edad)
+
+                findNavController().navigate(R.id.action_SecondFragment_to_FirstFragment)
+            }
         }
     }
 
