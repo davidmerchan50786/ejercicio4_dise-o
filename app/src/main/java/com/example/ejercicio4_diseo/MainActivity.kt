@@ -29,7 +29,10 @@ class MainActivity : AppCompatActivity() {
 
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         appBarConfiguration = AppBarConfiguration(navController.graph)
-        setupActionBarWithNavController(navController, appBarConfiguration)
+
+        //ocultamos actionbar
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.hide()
 
         // quitamos el fab que no necesitamos
         binding.fab.visibility = android.view.View.GONE
