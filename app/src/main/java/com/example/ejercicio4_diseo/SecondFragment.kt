@@ -23,6 +23,10 @@ class SecondFragment : Fragment() {
         return binding.root
     }
 
+    fun insertar() {
+        binding.buttonInsertar.performClick()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
