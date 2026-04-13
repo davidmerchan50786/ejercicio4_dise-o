@@ -14,6 +14,7 @@ class DetalleVehiculoFragment : Fragment() {
 
     private var _binding: FragmentDetalleVehiculoBinding? = null
     private val binding get() = _binding!!
+    private lateinit var viewModel: EjercicioViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,6 +26,9 @@ class DetalleVehiculoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Obtener referencia al ViewModel desde MainActivity
+        viewModel = (activity as MainActivity).miViewModel
 
         // recogemos los datos que nos pasan desde ThirdFragment
         val nombre = arguments?.getString("nombre") ?: ""
@@ -38,10 +42,9 @@ class DetalleVehiculoFragment : Fragment() {
         binding.tvDetallePrecio.text = "%.0f€".format(precio)
 
         binding.btnComprarVehiculo.setOnClickListener {
-            // añadimos el vehículo al usuario
-            val mainActivity = activity as MainActivity
+            // añadimos el vehículo al usuario a través del ViewModel
             val vehiculo = Vehiculo(tipo, nombre, descripcion, precio)
-            mainActivity.usuario?.agregarVehiculo(vehiculo)
+            viewModel.agregarVehiculo(vehiculo)
 
             // volvemos al primer fragmento limpiando el backstack
             findNavController().popBackStack(R.id.FirstFragment, false)

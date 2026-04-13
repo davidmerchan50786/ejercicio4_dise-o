@@ -15,6 +15,7 @@ class ThirdFragment : Fragment() {
 
     private var _binding: FragmentThirdBinding? = null
     private val binding get() = _binding!!
+    private lateinit var viewModel: EjercicioViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,8 +28,10 @@ class ThirdFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val mainActivity = activity as MainActivity
-        val usuario = mainActivity.usuario!!
+        // Obtener referencia al ViewModel desde MainActivity
+        viewModel = (activity as MainActivity).miViewModel
+
+        val usuario = viewModel.getUsuario()!!
 
         // lista de vehículos disponibles según la edad
         val vehiculosDisponibles = mutableListOf<Vehiculo>()

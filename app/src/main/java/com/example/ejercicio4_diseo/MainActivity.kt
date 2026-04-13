@@ -1,6 +1,7 @@
 package com.example.ejercicio4_diseo
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -16,6 +17,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     var usuario: Usuario? = null
     private lateinit var navController: NavController
+
+    val miViewModel : EjercicioViewModel by viewModels ()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

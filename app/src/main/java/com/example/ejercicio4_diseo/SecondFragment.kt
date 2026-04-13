@@ -14,6 +14,7 @@ class SecondFragment : Fragment() {
 
     private var _binding: FragmentSecondBinding? = null
     private val binding get() = _binding!!
+    private lateinit var viewModel: EjercicioViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,6 +30,9 @@ class SecondFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Obtener referencia al ViewModel desde MainActivity
+        viewModel = (activity as MainActivity).miViewModel
 
         binding.buttonInsertar.setOnClickListener {
             val nombre = binding.etNombre.text.toString().trim()
@@ -67,8 +71,7 @@ class SecondFragment : Fragment() {
             } else {
                 // todo bien, creamos el usuario y volvemos al primero
                 val edad = edadTexto.toInt()
-                val mainActivity = activity as MainActivity
-                mainActivity.usuario = Usuario(nombre, apellidos, edad)
+                viewModel.setUsuario(Usuario(nombre, apellidos, edad))
 
                 findNavController().navigate(R.id.action_SecondFragment_to_FirstFragment)
             }
