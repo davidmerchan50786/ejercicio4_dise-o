@@ -1,60 +1,68 @@
 package com.example.ejercicio4_diseo
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
+import com.example.ejercicio4_diseo.data.Repositorio
 import com.example.ejercicio4_diseo.modelo.Usuario
 import com.example.ejercicio4_diseo.modelo.Vehiculo
 import com.example.ejercicio4_diseo.utils.PreferencesManager
+import kotlinx.coroutines.launch
 
-class EjercicioViewModel(private val preferencesManager: PreferencesManager) : ViewModel() {
+class EjercicioViewModel(
+    private val preferencesManager: PreferencesManager,
+    private val repositorio: Repositorio
+) : ViewModel() {
+
+    //USUARIO-SharedPreferences
 
     private val _usuario = MutableLiveData<Usuario?>()
-    val usuario get() = _usuario
-
-    private val _vehiculos = MutableLiveData<MutableList<Vehiculo>>()
-    val vehiculos get() = _vehiculos
+    val usuario: LiveData<Usuario?> get() = _usuario
 
     init {
-        _usuario.value = preferencesManager.obtenerUsuario() //Carga datos guardados
-        _vehiculos.value = mutableListOf()
-
+        // Cargar usuario desde SharedPreferences
+        _usuario.value = preferencesManager.obtenerUsuario()
     }
 
-    //Metodos para modificar datos
-
-    fun setUsuario (nuevoUsuario: Usuario) {
+    fun setUsuario(nuevoUsuario: Usuario) {
         _usuario.value = nuevoUsuario
-        preferencesManager.guardarUsuario(nuevoUsuario) //Guarda en SharedPreferences
+        preferencesManager.guardarUsuario(nuevoUsuario)
     }
 
     fun getUsuario(): Usuario? {
         return _usuario.value
     }
 
-    // Verifica si hay usuario logeado
     fun isLogged(): Boolean {
         return preferencesManager.isLogged()
     }
 
-    // Metodo para hacer logout
-
     fun logout() {
         _usuario.value = null
-        _vehiculos.value = mutableListOf()
         preferencesManager.logout()
     }
 
-    fun agregarVehiculo(vehiculo: Vehiculo){
-        val lista = _vehiculos.value ?: mutableListOf()
-        lista.add(vehiculo)
-        _vehiculos.value = lista
+    // VEHÍCULOS-Room Database
+
+    /**
+     * LiveData reactivo desde la base de datos
+     */
+    val vehiculos: LiveData<List<Vehiculo>> =
+        repositorio.mostrarVehiculos().asLiveData()
+
+    /**
+     * Agregar vehículo a la base de datos
+     */
+    fun agregarVehiculo(vehiculo: Vehiculo) = viewModelScope.launch {
+        repositorio.insertar(vehiculo)
     }
 
+    /**
+     * Obtener lista actual de vehículos
+     */
     fun getVehiculos(): List<Vehiculo> {
-        return _vehiculos.value ?: emptyList()
-
+        return vehiculos.value ?: emptyList()
     }
-
-
-
 }

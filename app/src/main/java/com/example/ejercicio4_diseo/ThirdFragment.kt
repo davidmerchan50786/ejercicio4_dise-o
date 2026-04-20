@@ -28,25 +28,64 @@ class ThirdFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Obtener referencia al ViewModel desde MainActivity
         viewModel = (activity as MainActivity).miViewModel
-
         val usuario = viewModel.getUsuario()!!
 
-        // lista de vehículos disponibles según la edad
         val vehiculosDisponibles = mutableListOf<Vehiculo>()
 
         if (usuario.edad >= 18) {
-            vehiculosDisponibles.add(Vehiculo("Coche", "Coche 1", "Sedán compacto, ideal para ciudad", 15000.0))
-            vehiculosDisponibles.add(Vehiculo("Coche", "Coche 2", "SUV familiar con gran maletero", 25000.0))
-            vehiculosDisponibles.add(Vehiculo("Coche", "Coche 3", "Deportivo de alta gama", 45000.0))
+            vehiculosDisponibles.add(
+                Vehiculo(
+                    tipo = "Coche",
+                    nombre = "Coche 1",
+                    descripcion = "Sedán compacto, ideal para ciudad",
+                    precio = 15000.0
+                )
+            )
+            vehiculosDisponibles.add(
+                Vehiculo(
+                    tipo = "Coche",
+                    nombre = "Coche 2",
+                    descripcion = "SUV familiar con gran maletero",
+                    precio = 25000.0
+                )
+            )
+            vehiculosDisponibles.add(
+                Vehiculo(
+                    tipo = "Coche",
+                    nombre = "Coche 3",
+                    descripcion = "Deportivo de alta gama",
+                    precio = 45000.0
+                )
+            )
         }
-        vehiculosDisponibles.add(Vehiculo("Moto", "Moto 1", "Moto urbana 125cc, fácil de aparcar", 3500.0))
-        vehiculosDisponibles.add(Vehiculo("Moto", "Moto 2", "Naked 500cc para carretera", 7000.0))
-        vehiculosDisponibles.add(Vehiculo("Moto", "Moto 3", "Supermoto 750cc de alto rendimiento", 12000.0))
+
+        vehiculosDisponibles.add(
+            Vehiculo(
+                tipo = "Moto",
+                nombre = "Moto 1",
+                descripcion = "Moto urbana 125cc, fácil de aparcar",
+                precio = 3500.0
+            )
+        )
+        vehiculosDisponibles.add(
+            Vehiculo(
+                tipo = "Moto",
+                nombre = "Moto 2",
+                descripcion = "Naked 500cc para carretera",
+                precio = 7000.0
+            )
+        )
+        vehiculosDisponibles.add(
+            Vehiculo(
+                tipo = "Moto",
+                nombre = "Moto 3",
+                descripcion = "Supermoto 750cc de alto rendimiento",
+                precio = 12000.0
+            )
+        )
 
         val adapter = VehiculoAdapter(vehiculosDisponibles) { vehiculo ->
-            // al pulsar un item navegamos al fragmento detalle pasando los datos
             val bundle = bundleOf(
                 "nombre" to vehiculo.nombre,
                 "tipo" to vehiculo.tipo,
