@@ -4,8 +4,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.ejercicio4_diseo.modelo.Usuario
 import com.example.ejercicio4_diseo.modelo.Vehiculo
+import com.example.ejercicio4_diseo.utils.PreferencesManager
 
-class EjercicioViewModel : ViewModel(){
+class EjercicioViewModel(private val preferencesManager: PreferencesManager) : ViewModel() {
 
     private val _usuario = MutableLiveData<Usuario?>()
     val usuario get() = _usuario
@@ -14,7 +15,7 @@ class EjercicioViewModel : ViewModel(){
     val vehiculos get() = _vehiculos
 
     init {
-        _usuario.value = null
+        _usuario.value = preferencesManager.obtenerUsuario() //Carga datos guardados
         _vehiculos.value = mutableListOf()
 
     }
@@ -23,10 +24,24 @@ class EjercicioViewModel : ViewModel(){
 
     fun setUsuario (nuevoUsuario: Usuario) {
         _usuario.value = nuevoUsuario
+        preferencesManager.guardarUsuario(nuevoUsuario) //Guarda en SharedPreferences
     }
 
     fun getUsuario(): Usuario? {
         return _usuario.value
+    }
+
+    // Verifica si hay usuario logeado
+    fun isLogged(): Boolean {
+        return preferencesManager.isLogged()
+    }
+
+    // Metodo para hacer logout
+
+    fun logout() {
+        _usuario.value = null
+        _vehiculos.value = mutableListOf()
+        preferencesManager.logout()
     }
 
     fun agregarVehiculo(vehiculo: Vehiculo){

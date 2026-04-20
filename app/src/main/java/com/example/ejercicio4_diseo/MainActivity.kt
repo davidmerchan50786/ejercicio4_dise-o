@@ -1,24 +1,32 @@
 package com.example.ejercicio4_diseo
 
 import android.os.Bundle
-import androidx.activity.viewModels
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.widget.Toast
+import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.ejercicio4_diseo.databinding.ActivityMainBinding
-import com.example.ejercicio4_diseo.modelo.Usuario
+import com.example.ejercicio4_diseo.utils.PreferencesManager
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
-    var usuario: Usuario? = null
-    private lateinit var navController: NavController
 
-    val miViewModel : EjercicioViewModel by viewModels ()
+    // ¡NUEVO! Inicializar PreferencesManager
+    private val preferencesManager by lazy {
+        PreferencesManager(this)
+    }
+
+    // ¡CAMBIO! ViewModel con Factory
+    val miViewModel: EjercicioViewModel by viewModels {
+        EjercicioViewModelFactory(preferencesManager)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,61 +35,61 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbar)
-        supportActionBar?.hide()
 
-        navController = findNavController(R.id.nav_host_fragment_content_main)
-        binding.fab.visibility = View.GONE
-
-        navController.addOnDestinationChangedListener { _, _, _ ->
-            invalidateOptionsMenu()
-        }
+        val navController = findNavController(R.id.nav_host_fragment_content_main)
+        appBarConfiguration = AppBarConfiguration(navController.graph)
+        setupActionBarWithNavController(navController, appBarConfiguration)
     }
 
+    // ¡NUEVO! Crear menú
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        return when (navController.currentDestination?.id) {
-            R.id.FirstFragment -> {
-                menuInflater.inflate(R.menu.menu_first, menu)
-                true
-            }
-            R.id.SecondFragment -> {
-                menuInflater.inflate(R.menu.menu_second, menu)
-                true
-            }
-            // ThirdFragment y DetalleVehiculoFragment sin menú
-            else -> false
-        }
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
     }
 
+    // ¡NUEVO! Mostrar/ocultar logout según el fragmento
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        val navController = findNavController(R.id.nav_host_fragment_content_main)
+        val currentDestination = navController.currentDestination?.id
+
+        // Ocultar logout en SecondFragment
+        val logoutItem = menu.findItem(R.id.action_logout)
+        logoutItem?.isVisible = currentDestination != R.id.SecondFragment
+
+        return super.onPrepareOptionsMenu(menu)
+    }
+
+    // ¡NUEVO! Manejar click en logout
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-
-            R.id.menu_insertar_datos -> {
-                navController.navigate(R.id.action_FirstFragment_to_SecondFragment)
+            R.id.action_logout -> {
+                mostrarDialogoLogout()
                 true
             }
-
-            R.id.menu_comprar -> {
-                if (usuario == null) {
-                    Toast.makeText(this, "Primero tienes que insertar los datos", Toast.LENGTH_SHORT).show()
-                } else {
-                    navController.navigate(R.id.action_FirstFragment_to_ThirdFragment)
-                }
-                true
-            }
-
-            R.id.menu_insertar -> {
-                val fragment = supportFragmentManager.primaryNavigationFragment
-                    ?.childFragmentManager?.primaryNavigationFragment
-                if (fragment is SecondFragment) fragment.insertar()
-                true
-            }
-
-            R.id.menu_volver -> {
-                navController.popBackStack()
-                true
-            }
-
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    // ¡NUEVO! Diálogo de confirmación
+    private fun mostrarDialogoLogout() {
+        AlertDialog.Builder(this)
+            .setTitle("Cerrar sesión")
+            .setMessage("¿Estás seguro de que quieres cerrar sesión?")
+            .setPositiveButton("Sí") { _, _ ->
+                // Hacer logout
+                miViewModel.logout()
+
+                // Navegar al FirstFragment
+                val navController = findNavController(R.id.nav_host_fragment_content_main)
+                navController.navigate(R.id.FirstFragment)
+            }
+            .setNegativeButton("No", null)
+            .show()
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.nav_host_fragment_content_main)
+        return navController.navigateUp(appBarConfiguration)
+                || super.onSupportNavigateUp()
     }
 }

@@ -37,11 +37,12 @@ class FirstFragment : Fragment() {
         }
 
         binding.btnIrAComprar.setOnClickListener {
-            if (viewModel.getUsuario() == null) {
-                // si no hay datos insertados avisamos con toast
-                Toast.makeText(requireContext(), "Primero tienes que insertar los datos", Toast.LENGTH_SHORT).show()
-            } else {
+            // Si el usuario está logeado, puede ir directo a comprar
+            if (viewModel.isLogged()) {
                 findNavController().navigate(R.id.action_FirstFragment_to_ThirdFragment)
+            } else {
+                // Si no está logeado, primero debe insertar datos
+                findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
             }
         }
     }

@@ -24,57 +24,59 @@ class SecondFragment : Fragment() {
         return binding.root
     }
 
-    fun insertar() {
-        binding.buttonInsertar.performClick()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         // Obtener referencia al ViewModel desde MainActivity
         viewModel = (activity as MainActivity).miViewModel
 
+        // Si ya hay usuario logeado, pre-rellenar los campos
+        val usuarioActual = viewModel.getUsuario()
+        if (usuarioActual != null) {
+            binding.etNombre.setText(usuarioActual.nombre)
+            binding.etApellidos.setText(usuarioActual.apellidos)
+            binding.etEdad.setText(usuarioActual.edad.toString())
+        }
+
         binding.buttonInsertar.setOnClickListener {
             val nombre = binding.etNombre.text.toString().trim()
             val apellidos = binding.etApellidos.text.toString().trim()
-            val edadTexto = binding.etEdad.text.toString().trim()
+            val edadStr = binding.etEdad.text.toString().trim()
 
-            // validamos que todos los campos estén rellenos
-            var hayErrores = false
-            val errores = mutableListOf<String>()
-
-            if (nombre.isEmpty()) {
-                errores.add("El nombre no puede estar vacío")
-                hayErrores = true
-            }
-            if (apellidos.isEmpty()) {
-                errores.add("Los apellidos no pueden estar vacíos")
-                hayErrores = true
-            }
-            if (edadTexto.isEmpty()) {
-                errores.add("La edad no puede estar vacía")
-                hayErrores = true
-            } else {
-                val edad = edadTexto.toIntOrNull()
-                if (edad == null) {
-                    errores.add("La edad debe ser un número")
-                    hayErrores = true
-                } else if (edad < 16 || edad > 80) {
-                    errores.add("La edad debe estar entre 16 y 80 años")
-                    hayErrores = true
-                }
+            // Validar que los campos no estén vacíos
+            if (nombre.isEmpty() || apellidos.isEmpty() || edadStr.isEmpty()) {
+                Toast.makeText(
+                    requireContext(),
+                    "Por favor, rellena todos los campos",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
             }
 
-            if (hayErrores) {
-                // mostramos todos los errores en un toast
-                Toast.makeText(requireContext(), errores.joinToString("\n"), Toast.LENGTH_LONG).show()
-            } else {
-                // todo bien, creamos el usuario y volvemos al primero
-                val edad = edadTexto.toInt()
-                viewModel.setUsuario(Usuario(nombre, apellidos, edad))
-
-                findNavController().navigate(R.id.action_SecondFragment_to_FirstFragment)
+            // Validar edad
+            val edad = edadStr.toIntOrNull()
+            if (edad == null || edad <= 0) {
+                Toast.makeText(
+                    requireContext(),
+                    "Por favor, introduce una edad válida",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
             }
+
+            // Crear usuario y guardarlo
+            // setUsuario() ahora guarda automáticamente en SharedPreferences
+            val nuevoUsuario = Usuario(nombre, apellidos, edad)
+            viewModel.setUsuario(nuevoUsuario)
+
+            Toast.makeText(
+                requireContext(),
+                "Datos guardados correctamente",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            // Navegar de vuelta a la pantalla principal
+            findNavController().navigate(R.id.action_SecondFragment_to_FirstFragment)
         }
     }
 
